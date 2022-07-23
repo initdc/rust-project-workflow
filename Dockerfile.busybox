@@ -5,7 +5,7 @@ ARG TARGETPLATFORM
 # ARG BUILDPLATFORM
 
 WORKDIR /root
-COPY target/$TARGETPLATFORM/* .
+COPY target/docker/$TARGETPLATFORM/* .
 
 CMD ["/bin/sh"]
 

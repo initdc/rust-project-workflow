@@ -5,6 +5,6 @@ ARG TARGETPLATFORM
 # ARG BUILDPLATFORM
 
 WORKDIR /root
-COPY target/$TARGETPLATFORM/* .
+COPY target/docker/$TARGETPLATFORM/* .
 
-CMD ["/root/demo"]
+CMD ["/root/rust-demo-musl"]

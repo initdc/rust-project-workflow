@@ -1,9 +1,9 @@
 name: Build Once Time
 
 env:
-  GO_VERSION: '1.18'
+  RUST_VERSION: stable
   REGISTRY: docker.io
-  IMAGE_NAME: initdc/demo
+  IMAGE_NAME: initdc/rust-demo
 
 on:
   workflow_dispatch:
@@ -21,10 +21,10 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - name: Set go version  
-        uses: actions/setup-go@v2
+      - name: Set Rust version  
+        uses: actions-rs/toolchain@v1
         with:
-          go-version: '${{ env.GO_VERSION }}'
+          toolchain: '${{ env.RUST_VERSION }}'
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -65,5 +65,5 @@ jobs:
           echo "RELEASE_VERSION=\"${RELEASE_VERSION}\"" >> $GITHUB_ENV
 
           docker buildx ls
-          docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6 -t initdc/demo:${RELEASE_VERSION} . --push
-          docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6 -t initdc/demo:latest . --push
+          docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6 -t initdc/rust-demo:${RELEASE_VERSION} . --push
+          docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6 -t initdc/rust-demo:latest . --push

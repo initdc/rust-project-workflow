@@ -8,7 +8,7 @@ RUN set -e \
     && apk add --no-cache ca-certificates
 
 WORKDIR /root
-COPY target/$TARGETPLATFORM/* .
+COPY target/docker/$TARGETPLATFORM/* .
 
 CMD ["/bin/sh"]
 

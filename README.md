@@ -1,12 +1,13 @@
-# [Golang Project Workflow](https://github.com/initdc/golang-project-workflow)
+# [Rust Project Workflow](https://github.com/initdc/rust-project-workflow)
 
-> Project written by go, you just need build once time.
+> Project written by rust, you just need build once time.
 
 ## Build on Linux Host
 
 1. deps 
 
-    - go
+    - rustc
+    - cargo
     - ruby
     - file
     - docker
