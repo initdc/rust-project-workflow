@@ -93,20 +93,30 @@ IO.popen(cmd) do |r|
     puts r.readlines
 end
 
+`cargo install -f cross`
+
 for tier in [TIER_1, TIER_2, LINUX_ARM[:"5"]]
     puts tier.keys
 
     tier.each do |target, linker|
         `rustup target add #{target}`
 
+        tg_array = target.to_s.split('-')
+        windows = tg_array[2] == "windows"
+        linux = tg_array[2] == "linux"
+
         tg_fmt = target.to_s.split('-').join('_').upcase
         env = "CARGO_TARGET_#{tg_fmt}_LINKER=#{linker}"
         puts env
 
-        if linker != ""
-            cmd = "#{env} cargo build --#{RELEASE} --target #{target}"
+        if linux
+            if linker != ""
+                cmd = "#{env} cargo build --#{RELEASE} --target #{target}"
+            else
+                cmd = "cargo build --#{RELEASE} --target #{target}"
+            end
         else
-            cmd = "cargo build --#{RELEASE} --target #{target}"
+            cmd = "cross build --#{RELEASE} --target #{target}"
         end
         
         puts cmd
@@ -114,8 +124,6 @@ for tier in [TIER_1, TIER_2, LINUX_ARM[:"5"]]
             puts r.readlines
         end
 
-        tg_array = target.to_s.split('-')
-        windows = tg_array[2] == "windows"
         if windows 
             `ln #{TARGET_DIR}/#{target}/#{RELEASE}/#{PROGRAM}.exe #{UPLOAD_DIR}/#{target}`
         else
