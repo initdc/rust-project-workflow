@@ -37,16 +37,6 @@ jobs:
       - name: Build release
         run: |
           ruby build.rb
-      - name: Create release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
       - name: Upload
         if: startsWith(github.ref, 'refs/tags/v')
         uses: xresloader/upload-to-github-release@v1

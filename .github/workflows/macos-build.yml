@@ -1,0 +1,52 @@
+# ref: https://github.com/rust-lang/rustup/blob/master/ci/actions-templates/macos-builds-template.yaml
+name: Build On macOS
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set environment variables appropriately for the build
+        run: |
+          echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
+      - name: aarch64-specific items
+        if: matrix.target == 'aarch64-apple-darwin'
+        run: |
+          # Use nightly for now
+          rustup toolchain install --profile=minimal nightly
+          rustup default nightly
+
+          # Can't run tests: cross-compiling
+          echo "SKIP_TESTS=yes" >> $GITHUB_ENV
+      - name: Ensure we have our goal target installed
+        run: |
+          rustup target install "$TARGET"
+      - name: Run a full build and test
+        run: |
+          cargo build --release --target="$TARGET"
+      - name: Dump dynamic link targets
+        run: |
+          mkdir -p upload
+          ln target/${TARGET}/release/rust-demo upload/${TARGET}
+      - name: Upload
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "upload/*"
+          tags: true
+          draft: false
