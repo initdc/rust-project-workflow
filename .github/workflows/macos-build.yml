@@ -6,7 +6,11 @@ on:
   push:
     tags:
       - 'v*'
-
+    branches:
+      - 'dev'
+      - 'next'
+  pull_request:
+  
 jobs:
   build:
     name: Build
