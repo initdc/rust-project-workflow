@@ -7,4 +7,4 @@ ARG TARGETPLATFORM
 WORKDIR /root
 COPY target/docker/$TARGETPLATFORM/* .
 
-CMD ["/root/rust-demo-musl"]
+CMD ["/root/rust-demo"]

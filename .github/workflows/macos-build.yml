@@ -41,12 +41,14 @@ jobs:
         run: |
           mkdir -p upload
           ln target/${TARGET}/release/rust-demo upload/${TARGET}
-      - name: Upload
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: xresloader/upload-to-github-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          file: "upload/*"
-          tags: true
-          draft: false
+          name: macos-build-artifacts
+          path: "upload/*"
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: "upload/*"
