@@ -130,7 +130,25 @@ def run_install
     end
 end
 
-version = ARGV[0][0] == "v" ? ARGV[0] : VERSION
+EMPTY = ["", " ", "  "]
+version = VERSION
+# version = ARGV[0][0] == "v" ? ARGV[0] : VERSION
+if not ARGV.empty?
+    if ARGV[0].start_with? "-"
+        puts "version fallback to: #{version}"
+    elsif EMPTY.include? ARGV[0]
+        print "version not valid: "
+        p ARGV[0]
+        puts "version fallback to: #{version}"
+    else
+        version = ARGV[0]
+        puts "version = #{version}, get from ARGV[0]"
+    end
+else
+    puts "ARGV is empty"
+    puts "version = #{version}, by default"
+end
+
 test_bin = ARGV[0] == "test" || false
 less_bin = ARGV[0] == "less" || false
 

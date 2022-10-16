@@ -23,6 +23,7 @@
     ruby build.rb
     ruby build.rb v0.1.1 
     ruby build.rb less ## build bin for LESS_OS_ARCH
+    
     echo > version.rb 'VERSION = "fix-bug-001"'
     ruby build.rb test --run-test
     
