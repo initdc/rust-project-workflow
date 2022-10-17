@@ -294,22 +294,22 @@ IO.popen(cmd) do |r|
     end
 end
 
-Dir.chdir UPLOAD_DIR do
-    file = "SHA256SUM"
-    IO.write(file, "")
+# Dir.chdir UPLOAD_DIR do
+#     file = "SHA256SUM"
+#     IO.write(file, "")
 
-    cmd = "sha256sum *"
-    IO.popen(cmd) do |r|
-        rd = r.readlines
+#     cmd = "sha256sum *"
+#     IO.popen(cmd) do |r|
+#         rd = r.readlines
 
-        for o in rd
-            if ! o.include? "SHA256SUM" and ! o.include? "BINARYS"
-                print o
-                IO.write(file, o, mode: "a")
-            end
-        end
-    end
-end
+#         for o in rd
+#             if ! o.include? "SHA256SUM" and ! o.include? "BINARYS"
+#                 print o
+#                 IO.write(file, o, mode: "a")
+#             end
+#         end
+#     end
+# end
 
 # `docker buildx build --platform linux/amd64 -t rust-demo:amd64 . --load`
 # cmd = "docker run rust-demo:amd64"
