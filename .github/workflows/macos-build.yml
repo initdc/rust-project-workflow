@@ -49,6 +49,8 @@ jobs:
         run: |
           mkdir -p upload
           ln target/${TARGET}/release/rust-demo upload/${TARGET}
+      - name: Generate SHA256SUM
+        run: ruby sha256sum.rb upload SHA256SUM-macos    
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:

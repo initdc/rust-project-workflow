@@ -29,6 +29,8 @@ jobs:
         run: |
           ruby build.rb --install-cc
           ruby build.rb test
+      - name: Generate SHA256SUM
+        run: ruby sha256sum.rb upload SHA256SUM-linux    
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:

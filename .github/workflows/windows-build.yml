@@ -66,7 +66,9 @@ jobs:
           cargo build --release --target="${env:TARGET}"
           mkdir upload
           copy target\${env:TARGET}\release\rust-demo.exe upload\${env:TARGET}
-        shell: powershell  
+        shell: powershell 
+      - name: Generate SHA256SUM
+        run: ruby sha256sum.rb upload SHA256SUM-windows   
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
