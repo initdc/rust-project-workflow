@@ -31,8 +31,10 @@ jobs:
           ruby build.rb test
       - name: Generate SHA256SUM
         run: ruby sha256sum.rb upload SHA256SUM-linux    
+      - name: Clone my upload-artifact
+        run: git clone https://github.com/initdc/upload-artifact.git ./upload-artifact
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: ./upload-artifact
         with:
-          name: linux-test-build-artifacts
           path: "upload/*"
+          artifact-per-file: true

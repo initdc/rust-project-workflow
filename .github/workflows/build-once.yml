@@ -47,11 +47,13 @@ jobs:
           ruby build.rb ${RELEASE_VERSION}
       - name: Generate SHA256SUM
         run: ruby sha256sum.rb upload SHA256SUM-linux
+      - name: Clone my upload-artifact
+        run: git clone https://github.com/initdc/upload-artifact.git ./upload-artifact
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: ./upload-artifact
         with:
-          name: linux-build-artifacts
           path: "upload/*"
+          artifact-per-file: true
       - name: Upload to Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1
