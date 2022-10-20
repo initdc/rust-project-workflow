@@ -169,12 +169,16 @@ def existsThen cmd, src, dest
     end
 end
 
-def notExistsThen cmd, dest, src
+def notExistsThen(cmd, dest, src)
     if not system "test -f #{dest}"
-        cmd = "#{cmd} #{src} #{dest}"
-        puts cmd
-        IO.popen(cmd) do |r|
-            puts r.readlines
+        if system "test -f #{src}"
+            cmd = "#{cmd} #{src} #{dest}"
+            puts cmd
+            IO.popen(cmd) do |r|
+                puts r.readlines
+            end
+        else
+            puts "!! #{src} not exists"
         end
     end
 end
@@ -222,6 +226,7 @@ GO_RUST.each do |target_platform, target|
     if architecture == "arm"
         LINUX_ARM.each do |variant, target_linker|
             docker = "#{TARGET_DIR}/#{DOCKER_DIR}/#{os}/#{architecture}/v#{variant}"
+            puts docker
             `mkdir -p #{docker}`
 
             if target_linker.keys.length > 1
@@ -242,6 +247,7 @@ GO_RUST.each do |target_platform, target|
         end
     else        
         docker = "#{TARGET_DIR}/#{DOCKER_DIR}/#{os}/#{architecture}"
+        puts docker
         `mkdir -p #{docker}`
 
         if target.kind_of?(Array)
