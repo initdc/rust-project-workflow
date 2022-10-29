@@ -1,3 +1,6 @@
 target
 upload
 .terminalname
+
+zig-linkers/
+zig-targets.txt

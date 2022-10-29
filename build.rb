@@ -1,5 +1,6 @@
 require "./version"
 require "./get-version"
+require "./zig-linkers"
 
 PROGRAM = "rust-demo"
 # VERSION = "v0.1.0"
@@ -8,8 +9,10 @@ RELEASE_BUILD = true
 RELEASE_ARG = RELEASE_BUILD == true ? "--release" : ""
 RELEASE = RELEASE_BUILD == true ? "release" : "debug"
 # used in this way:
-# LINKER_ENV BUILD_CMD RELEASE_ARG TARGET_ARG
+# ZIG_CC_ENV ZIG_LINKER_ENV BUILD_CMD RELEASE_ARG TARGET_ARG
 TEST_CMD = "cargo test"
+
+ZIG_CC = "zig cc -target"
 
 TARGET_DIR = "target"
 DOCKER_DIR = "docker"
@@ -42,10 +45,10 @@ GO_RUST = {
 
 LINUX_ARM = {
     # Tier 2
-    "5": {"armv5te-unknown-linux-gnueabi": "arm-linux-gnueabi-gcc", "armv5te-unknown-linux-musleabi": "arm-linux-musleabi-gcc"},
+    "5": {"armv5te-unknown-linux-gnueabi": "armeb-linux-gnueabi", "armv5te-unknown-linux-musleabi": "armeb-linux-musleabi"},
     # Tier 2 Host
-    "6": {"arm-unknown-linux-gnueabi": "arm-linux-gnueabi-gcc", "arm-unknown-linux-gnueabihf": "arm-unknown-linux-gnueabihf-gcc"},
-    "7": {"armv7-unknown-linux-gnueabihf": "arm-linux-gnueabihf-gcc"},
+    "6": {"arm-unknown-linux-gnueabi": "arm-linux-gnueabi", "arm-unknown-linux-gnueabihf": "arm-linux-gnueabihf"},
+    "7": {"armv7-unknown-linux-gnueabihf": "arm-linux-gnueabihf"},
 }
 
 # Rust Platform Support Tier ( 1 & 2 ) with Host Tools
@@ -53,45 +56,45 @@ LINUX_ARM = {
 # linker info from cross-rs/cross
 # https://github.com/cross-rs/cross/tree/main/docker
 TIER_1_HOST = {
-    "aarch64-unknown-linux-gnu": "aarch64-linux-gnu-gcc",
-    "i686-pc-windows-gnu": "i686-w64-mingw32-gcc",
+    "aarch64-unknown-linux-gnu": "aarch64-linux-gnu",
+    "i686-pc-windows-gnu": "i686-windows-gnu",
     "i686-pc-windows-msvc": "",
-    "i686-unknown-linux-gnu": "i686-linux-gnu-gcc",
-    "x86_64-apple-darwin": "x86_64-apple-darwin-clang",
-    "x86_64-pc-windows-gnu": "x86_64-w64-mingw32-gcc",
+    "i686-unknown-linux-gnu": "i686-linux-gnu",
+    "x86_64-apple-darwin": "x86_64-macos-none",
+    "x86_64-pc-windows-gnu": "x86_64-windows-gnu",
     "x86_64-pc-windows-msvc": "",
-    "x86_64-unknown-linux-gnu": "x86_64-linux-gnu-gcc"
+    "x86_64-unknown-linux-gnu": "x86_64-linux-gnu"
 }
 
 TIER_2_HOST = {
-    "aarch64-apple-darwin": "aarch64-apple-darwin-gcc",
+    "aarch64-apple-darwin": "aarch64-macos-none",
     "aarch64-pc-windows-msvc": "",
-    "aarch64-unknown-linux-musl": "aarch64-linux-musl-gcc",
-    "arm-unknown-linux-gnueabi": "arm-linux-gnueabi-gcc",
-    "arm-unknown-linux-gnueabihf": "arm-linux-gnueabihf-gcc",
-    "armv7-unknown-linux-gnueabihf": "arm-linux-gnueabihf-gcc",
-    "mips-unknown-linux-gnu": "mips-linux-gnu-gcc",
-    "mips64-unknown-linux-gnuabi64": "mips64-linux-gnuabi64-gcc",
-    "mips64el-unknown-linux-gnuabi64": "mips64el-linux-gnuabi64-gcc",
-    "mipsel-unknown-linux-gnu": "mipsel-linux-gnu-gcc",
-    "powerpc-unknown-linux-gnu": "powerpc-linux-gnu-gcc",
-    "powerpc64-unknown-linux-gnu": "powerpc64-linux-gnu-gcc",
-    "powerpc64le-unknown-linux-gnu": "powerpc64le-linux-gnu-gcc",
-    "riscv64gc-unknown-linux-gnu": "riscv64-linux-gnu-gcc",
-    "s390x-unknown-linux-gnu": "s390x-linux-gnu-gcc",
-    "x86_64-unknown-freebsd": "x86_64-unknown-freebsd-gcc",
-    "x86_64-unknown-illumos": "x86_64-unknown-illumos-gcc",
-    "x86_64-unknown-linux-musl": "",
-    "x86_64-unknown-netbsd": "x86_64-unknown-netbsd-gcc",
+    "aarch64-unknown-linux-musl": "aarch64-linux-musl",
+    "arm-unknown-linux-gnueabi": "arm-linux-gnueabi",
+    "arm-unknown-linux-gnueabihf": "arm-linux-gnueabihf",
+    "armv7-unknown-linux-gnueabihf": "arm-linux-gnueabihf",
+    "mips-unknown-linux-gnu": "mips-linux-gnueabi",
+    "mips64-unknown-linux-gnuabi64": "mips64-linux-gnuabi64",
+    "mips64el-unknown-linux-gnuabi64": "mips64el-linux-gnuabi64",
+    "mipsel-unknown-linux-gnu": "mipsel-linux-gnueabi",
+    "powerpc-unknown-linux-gnu": "powerpc-linux-gnu",
+    "powerpc64-unknown-linux-gnu": "powerpc64-linux-gnu",
+    "powerpc64le-unknown-linux-gnu": "powerpc64le-linux-gnu",
+    "riscv64gc-unknown-linux-gnu": "riscv64-linux-gnu",
+    "s390x-unknown-linux-gnu": "s390x-linux-gnu",
+    "x86_64-unknown-freebsd": "x86_64-freebsd-gnu",
+    "x86_64-unknown-illumos": "x86_64-illumos-gnu",
+    "x86_64-unknown-linux-musl": "x86_64-linux-musl",
+    "x86_64-unknown-netbsd": "x86_64-netbsd-gnu",
 }
 
 TIER_2 = {
-    "aarch64-linux-android": "aarch64-linux-android-gcc",
-    "arm-linux-androideabi": "arm-linux-androideabi-gcc",
-    "armv7-linux-androideabi": "arm-linux-androideabi-gcc",
-    "i686-linux-android": "i686-linux-android-gcc",
-    "i686-unknown-linux-musl": "",
-    "x86_64-linux-android": "x86_64-linux-android-gcc"
+    "aarch64-linux-android": "aarch64-linux-android",
+    "arm-linux-androideabi": "arm-linux-androideabi",
+    "armv7-linux-androideabi": "arm-linux-androideabi",
+    "i686-linux-android": "i686-linux-android",
+    "i686-unknown-linux-musl": "i686-linux-musl",
+    "x86_64-linux-android": "x86_64-linux-android"
 }
 
 OS_ARCH = [TIER_1_HOST, TIER_2_HOST, LINUX_ARM[:"5"], TIER_2]
@@ -99,8 +102,8 @@ OS_ARCH = [TIER_1_HOST, TIER_2_HOST, LINUX_ARM[:"5"], TIER_2]
 TEST_OS_ARCH = [TIER_1_HOST, LINUX_ARM[:"6"], LINUX_ARM[:"7"]]
 
 LESS_OS_ARCH = [{
-    "aarch64-unknown-linux-gnu": "aarch64-linux-gnu-gcc",
-    "x86_64-unknown-linux-gnu": "x86_64-linux-gnu-gcc"
+    "aarch64-unknown-linux-gnu": "aarch64-linux-gnu",
+    "x86_64-unknown-linux-gnu": "x86_64-linux-gnu"
 }]
 
 CC = [
@@ -183,25 +186,31 @@ def notExistsThen(cmd, dest, src)
     end
 end
 
+IGNORE_OS = ["windows", "android", "androideabi"]
+
 for tier in tiers
     puts tier.keys
 
     tier.each do |target, linker|
         tg_array = target.to_s.split('-')
+        arch = tg_array[0]
         os = tg_array[2]
 
-        if os != "linux"
+        if IGNORE_OS.include? os 
             next
         end
 
         `rustup target add #{target}`
 
         tg_fmt = target.to_s.split('-').join('_').upcase
-        linker_env = "CARGO_TARGET_#{tg_fmt}_LINKER=#{linker}"
-        puts linker_env
+        zig_cc_env = "CC='#{ZIG_CC} #{linker}'"
+        linker_env = "CARGO_TARGET_#{tg_fmt}_LINKER='#{ZIG_LINKERS_DIR}/#{linker}'"
+
+        gen_zig_linkers linker, ZIG_CC
+        puts zig_cc_env, linker_env
 
         if linker != ""
-            cmd = "#{linker_env} #{BUILD_CMD} #{RELEASE_ARG} --target #{target}"
+            cmd = "#{zig_cc_env} #{linker_env} #{BUILD_CMD} #{RELEASE_ARG} --target #{target}"
         else
             cmd = "#{BUILD_CMD} #{RELEASE_ARG} --target #{target}"
         end
