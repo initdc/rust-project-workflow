@@ -52,6 +52,8 @@ LINUX_ARM = {
 # https://doc.rust-lang.org/nightly/rustc/platform-support.html
 # linker info from cross-rs/cross
 # https://github.com/cross-rs/cross/tree/main/docker
+#
+# ls /usr/bin/*-gcc -1
 TIER_1_HOST = {
     "aarch64-unknown-linux-gnu": "aarch64-linux-gnu-gcc",
     "i686-pc-windows-gnu": "i686-w64-mingw32-gcc",
@@ -119,6 +121,8 @@ CC = [
     "gcc-i686-linux-gnu",
     "gcc-x86-64-linux-gnu",
     "gcc-x86-64-linux-gnux32",
+    # "gcc-mingw-w64-i686",
+    # "gcc-mingw-w64-x86-64",
     "musl-dev",
     "musl-tools"
 ]
