@@ -218,7 +218,7 @@ for tier in tiers
     end
 end
 
-GO_RUST.each do |target_platform, target|
+GO_RUST.each do |target_platform, targets|
     tp_array = target_platform.to_s.split('/')
     os = tp_array[0]
     architecture = tp_array[1]
@@ -250,17 +250,18 @@ GO_RUST.each do |target_platform, target|
         puts docker
         `mkdir -p #{docker}`
 
-        if target.kind_of?(Array)
-            for tg in target
-                tg_array = tg.to_s.split('-')
+        if targets.kind_of?(Array)
+            for target in targets
+                tg_array = target.to_s.split('-')
                 abi = tg_array.last
 
-                existsThen "ln", "#{TARGET_DIR}/#{tg}/#{RELEASE}/#{PROGRAM}", "#{docker}/#{PROGRAM}-#{abi}"
+                existsThen "ln", "#{TARGET_DIR}/#{target}/#{RELEASE}/#{PROGRAM}", "#{docker}/#{PROGRAM}-#{abi}"
                 Dir.chdir docker do
                     notExistsThen "ln -s", PROGRAM, "#{PROGRAM}-#{abi}"
                 end
             end
         else
+            target = targets
             existsThen "ln", "#{TARGET_DIR}/#{target}/#{RELEASE}/#{PROGRAM}", "#{docker}/#{PROGRAM}"
         end
     end
