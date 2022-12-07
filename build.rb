@@ -44,7 +44,7 @@ LINUX_ARM = {
     # Tier 2
     "5": {"armv5te-unknown-linux-gnueabi": "arm-linux-gnueabi-gcc", "armv5te-unknown-linux-musleabi": "arm-linux-musleabi-gcc"},
     # Tier 2 Host
-    "6": {"arm-unknown-linux-gnueabi": "arm-linux-gnueabi-gcc", "arm-unknown-linux-gnueabihf": "arm-unknown-linux-gnueabihf-gcc"},
+    "6": {"arm-unknown-linux-gnueabi": "arm-linux-gnueabi-gcc", "arm-unknown-linux-gnueabihf": "arm-linux-gnueabihf-gcc"},
     "7": {"armv7-unknown-linux-gnueabihf": "arm-linux-gnueabihf-gcc"},
 }
 
