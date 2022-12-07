@@ -183,12 +183,18 @@ def notExistsThen(cmd, dest, src)
     end
 end
 
+`cargo install cross`
+
 for tier in tiers
+    puts
     puts tier.keys
+    puts
 
     tier.each do |target, linker|
         tg_array = target.to_s.split('-')
+        architecture = tg_array[0]
         os = tg_array[2]
+        abi = tg_array[3]
 
         if os != "linux"
             next
@@ -205,6 +211,10 @@ for tier in tiers
         else
             cmd = "#{BUILD_CMD} #{RELEASE_ARG} --target #{target}"
         end
+
+        if abi.start_with?("musl") and !architecture.include?("86")
+            cmd = "cross build #{RELEASE_ARG} --target #{target}"
+        end 
 
         puts cmd
         IO.popen(cmd) do |r|
